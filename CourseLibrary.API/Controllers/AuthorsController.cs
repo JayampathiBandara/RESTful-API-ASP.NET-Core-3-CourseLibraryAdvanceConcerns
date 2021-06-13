@@ -33,7 +33,11 @@ namespace CourseLibrary.API.Controllers
         [HttpHead]
         // Normally all complex types comes in body, but here we send them as Query parameters and we need to say it by adding
         //[FromQuery] 
-        public ActionResult<IEnumerable<AuthorDto>> GetAuthors([FromQuery] AuthorsResourceParameters authorsResourceParameters)
+        //public ActionResult<IEnumerable<AuthorDto>>
+        //          GetAuthors([FromQuery] AuthorsResourceParameters authorsResourceParameters)
+        // after we support dynamic dataType, can't use <IEnumerable<AuthorDto>>
+        // we create object based on the parameters send via authorsResourceParameters.Fields
+        public IActionResult GetAuthors([FromQuery] AuthorsResourceParameters authorsResourceParameters)
         {
             if (!_propertyMappingService.ValidMappingExistsFor<AuthorDto, Entities.Author>
                     (authorsResourceParameters.OrderBy))
@@ -64,7 +68,8 @@ namespace CourseLibrary.API.Controllers
             Response.Headers.Add("X-Pagination",
                 JsonSerializer.Serialize(paginationMetadata));
 
-            return Ok(_mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo));
+            return Ok(_mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo)
+            .ShapeData(authorsResourceParameters.Fields));
         }
 
         [HttpGet("{authorId}", Name = "GetAuthor")]
@@ -127,6 +132,7 @@ namespace CourseLibrary.API.Controllers
                     return Url.Link("GetAuthors",
                       new
                       {
+                          fields = authorsResourceParameters.Fields,
                           orderBy = authorsResourceParameters.OrderBy,
                           pageNumber = authorsResourceParameters.PageNumber - 1,
                           pageSize = authorsResourceParameters.PageSize,
@@ -137,6 +143,7 @@ namespace CourseLibrary.API.Controllers
                     return Url.Link("GetAuthors",
                       new
                       {
+                          fields = authorsResourceParameters.Fields,
                           orderBy = authorsResourceParameters.OrderBy,
                           pageNumber = authorsResourceParameters.PageNumber + 1,
                           pageSize = authorsResourceParameters.PageSize,
@@ -148,6 +155,7 @@ namespace CourseLibrary.API.Controllers
                     return Url.Link("GetAuthors",
                     new
                     {
+                        fields = authorsResourceParameters.Fields,
                         orderBy = authorsResourceParameters.OrderBy,
                         pageNumber = authorsResourceParameters.PageNumber,
                         pageSize = authorsResourceParameters.PageSize,
