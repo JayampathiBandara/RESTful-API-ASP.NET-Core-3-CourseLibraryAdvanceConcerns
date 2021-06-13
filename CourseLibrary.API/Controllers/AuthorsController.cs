@@ -72,8 +72,8 @@ namespace CourseLibrary.API.Controllers
                 pageSize = authorsFromRepo.PageSize,
                 currentPage = authorsFromRepo.CurrentPage,
                 totalPages = authorsFromRepo.TotalPages,
-                previousPageLink,
-                nextPageLink
+                //previousPageLink, moved to HATEOS Implementation
+                //nextPageLink  moved to HATEOS Implementation
             };
 
             Response.Headers.Add("X-Pagination",
