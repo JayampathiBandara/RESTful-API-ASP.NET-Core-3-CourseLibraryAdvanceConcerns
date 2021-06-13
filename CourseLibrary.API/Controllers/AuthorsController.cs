@@ -133,7 +133,7 @@ namespace CourseLibrary.API.Controllers
             //return Ok(_mapper.Map<AuthorDto>(authorFromRepo).ShapeData(fields));
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CreateAuthor")]
         public ActionResult<AuthorDto> CreateAuthor(AuthorForCreationDto author)
         {
             // if author == null framework return BadRequest and no need to handle it
